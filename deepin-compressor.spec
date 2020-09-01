@@ -8,12 +8,13 @@
 
 Name:           deepin-compressor
 Version:        5.6.9
-Release:        1
+Release:        2
 Summary:        Archive Manager is a fast and lightweight application for creating and extracting archives.
 License:        GPLv3+
 URL:            https://uos-packages.deepin.com/uos/pool/main/d/deepin-devicemanager/
 Source0:        %{name}_%{version}.orig.tar.xz
 
+BuildRequires:  dtkcore-devel
 BuildRequires:  dtkwidget-devel
 BuildRequires:  qt5-qtbase-devel
 BuildRequires:  gsettings-qt-devel
@@ -64,5 +65,8 @@ popd
 
 
 %changelog
+* Tue Sep 1 2020 chenbo pan <panchenbo@uniontech.com> - 5.6.9-2
+- fix compile fail
+
 * Thu Jul 30 2020 openEuler Buildteam <buildteam@openeuler.org> - 5.6.9-1
 - Package init
