@@ -1,70 +1,66 @@
-%bcond_with check
-
-%global with_debug 1
-%if 0%{?with_debug}
-%global debug_package   %{nil}
-%endif
-
-
 Name:           deepin-compressor
-Version:        5.6.9
-Release:        3
-Summary:        Archive Manager is a fast and lightweight application for creating and extracting archives.
+Version:        5.8.0.14
+Release:        1
+Summary:        A fast and lightweight application for creating and extracting archives
 License:        GPLv3+
-URL:            https://uos-packages.deepin.com/uos/pool/main/d/deepin-devicemanager/
-Source0:        %{name}_%{version}.orig.tar.xz
+URL:            https://github.com/linuxdeepin/deepin-devicemanager
+Source0:        %{name}-%{version}.tar.gz
 
+BuildRequires: gcc-c++
+BuildRequires: cmake
+BuildRequires: qt5-devel
+
+BuildRequires: pkgconfig(gsettings-qt)
+BuildRequires: pkgconfig(libsecret-1)
+BuildRequires: pkgconfig(gio-unix-2.0)
+BuildRequires: pkgconfig(disomaster)
 BuildRequires:  dtkcore-devel
 BuildRequires:  dtkwidget-devel
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  gsettings-qt-devel
-BuildRequires:  udisks2-qt5-devel
-BuildRequires:  qt5-qtx11extras-devel
-BuildRequires:  qt5-qtmultimedia-devel
-BuildRequires:  kf5-kcodecs
-BuildRequires:  kf5-kcodecs-devel
-BuildRequires:  libarchive-devel
-BuildRequires:  libarchive
-BuildRequires:  kf5-karchive-devel
-BuildRequires:  libzip-devel
-BuildRequires:  qt5-linguist
-BuildRequires:  libsecret-devel
-BuildRequires:  poppler-cpp-devel
-BuildRequires:  poppler-cpp
-BuildRequires:  disomaster-devel
-BuildRequires:  qt5-qtsvg-devel
-BuildRequires:  zlib-devel
+BuildRequires: pkgconfig(dtkgui)
+BuildRequires: pkgconfig(udisks2-qt5)
+BuildRequires: kf5-kcodecs-devel
+BuildRequires: kf5-karchive-devel
+BuildRequires: libzip-devel
+BuildRequires: libarchive-devel
+BuildRequires: minizip-devel
 
-Requires: p7zip
+Requires: p7zip p7zip-plugins
+Requires: lz4-libs
+Requires: unrar
+Requires: deepin-shortcut-viewer
 
 %description
-Archive Manager is a fast and lightweight application for creating and extracting archives.
-
+%{summary}.
 
 %prep
 %autosetup
 
 %build
-export PATH=$PATH:/usr/lib64/qt5/bin
-mkdir build && cd build
-%{_libdir}/qt5/bin/qmake ..
-%{__make}
-
-%install
-pushd %{_builddir}/%{name}-%{version}/build
-%make_install INSTALL_ROOT=%{buildroot}
+# help find (and prefer) qt5 utilities, e.g. qmake, lrelease
+export PATH=%{_qt5_bindir}:$PATH
+mkdir build && pushd build
+%qmake_qt5 ../ VERSION=%{version} DEFINES+="VERSION=%{version}"
+%make_build
 popd
 
+%install
+%make_install -C build INSTALL_ROOT="%buildroot"
 
 %files
-%{_bindir}/%{name}
-%{_datadir}/*
-/usr/lib/*
-%license LICENSE
 %doc README.md
-
+%license LICENSE
+%{_bindir}/%{name}
+/usr/lib/%{name}/plugins/*.so
+%{_datadir}/deepin/dde-file-manager/oem-menuextensions/*.desktop
+%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
+%{_datadir}/%{name}/translations/*.qm
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/mime/packages/%{name}.xml
 
 %changelog
+* Fri Jul 09 2021 weidong <weidong@uniontech.com> - 5.8.0.14-3
+- Update 5.8.0.14
+
 * Sat Jun 05 2021 weidong <weidong@uniontech.com> - 5.6.9-3
 - Update Requires.
 
