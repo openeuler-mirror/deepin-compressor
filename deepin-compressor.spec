@@ -1,6 +1,6 @@
 Name:           deepin-compressor
 Version:        5.8.0.14
-Release:        1
+Release:        2
 Summary:        A fast and lightweight application for creating and extracting archives
 License:        GPLv3+
 URL:            https://github.com/linuxdeepin/deepin-devicemanager
@@ -14,8 +14,8 @@ BuildRequires: pkgconfig(gsettings-qt)
 BuildRequires: pkgconfig(libsecret-1)
 BuildRequires: pkgconfig(gio-unix-2.0)
 BuildRequires: pkgconfig(disomaster)
-BuildRequires:  dtkcore-devel
-BuildRequires:  dtkwidget-devel
+BuildRequires: dtkcore-devel
+BuildRequires: dtkwidget-devel
 BuildRequires: pkgconfig(dtkgui)
 BuildRequires: pkgconfig(udisks2-qt5)
 BuildRequires: kf5-kcodecs-devel
@@ -24,10 +24,10 @@ BuildRequires: libzip-devel
 BuildRequires: libarchive-devel
 BuildRequires: minizip-devel
 
-Requires: p7zip p7zip-plugins
-Requires: lz4-libs
-Requires: unrar
-Requires: deepin-shortcut-viewer
+Requires:   p7zip
+Requires:   lz4-libs
+Requires:   deepin-shortcut-viewer
+Recommends: unrar p7zip-plugins
 
 %description
 %{summary}.
@@ -58,7 +58,10 @@ popd
 %{_datadir}/mime/packages/%{name}.xml
 
 %changelog
-* Fri Jul 09 2021 weidong <weidong@uniontech.com> - 5.8.0.14-3
+* Fri Feb 11 2022 liweigang <liweiganga@uniontech.com> - 5.8.0.14-2
+- fix nothing install requires
+
+* Fri Jul 09 2021 weidong <weidong@uniontech.com> - 5.8.0.14-1
 - Update 5.8.0.14
 
 * Sat Jun 05 2021 weidong <weidong@uniontech.com> - 5.6.9-3
