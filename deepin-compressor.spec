@@ -1,6 +1,6 @@
 %define specrelease 1%{?dist}
 %if 0%{?openeuler}
-%define specrelease 1
+%define specrelease 2
 %endif
 
 Name:           deepin-compressor
@@ -33,9 +33,9 @@ BuildRequires: gtest-devel gmock
 
 Requires: p7zip
 Requires: lz4-libs
-Requires: unrar
 Requires: deepin-shortcut-viewer
 Requires: lzop
+Recommends: unrar p7zip-plugins
 
 %description
 %{summary}.
@@ -70,6 +70,9 @@ popd
 %{_datadir}/applications/context-menus/*.conf
 
 %changelog
+* Fri Aug 05 2022 liweigang <liweiganga@uniontech.com> - 5.10.5-2
+- fix nothing install requires
+
 * Mon Jul 18 2022 konglidong <konglidong@uniontech.com> - 5.10.5-1
 - update to 5.10.5
 
