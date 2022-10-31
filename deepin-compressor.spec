@@ -1,6 +1,11 @@
+%define specrelease 1%{?dist}
+%if 0%{?openeuler}
+%define specrelease 2
+%endif
+
 Name:           deepin-compressor
-Version:        5.8.0.14
-Release:        2
+Version:        5.10.5
+Release:        %{specrelease}
 Summary:        A fast and lightweight application for creating and extracting archives
 License:        GPLv3+
 URL:            https://github.com/linuxdeepin/deepin-devicemanager
@@ -14,8 +19,8 @@ BuildRequires: pkgconfig(gsettings-qt)
 BuildRequires: pkgconfig(libsecret-1)
 BuildRequires: pkgconfig(gio-unix-2.0)
 BuildRequires: pkgconfig(disomaster)
-BuildRequires: dtkcore-devel
 BuildRequires: dtkwidget-devel
+BuildRequires: dtkcore-devel
 BuildRequires: pkgconfig(dtkgui)
 BuildRequires: pkgconfig(udisks2-qt5)
 BuildRequires: kf5-kcodecs-devel
@@ -23,10 +28,13 @@ BuildRequires: kf5-karchive-devel
 BuildRequires: libzip-devel
 BuildRequires: libarchive-devel
 BuildRequires: minizip-devel
+BuildRequires: poppler-cpp-devel
+BuildRequires: gtest-devel gmock
 
-Requires:   p7zip
-Requires:   lz4-libs
-Requires:   deepin-shortcut-viewer
+Requires: p7zip
+Requires: lz4-libs
+Requires: deepin-shortcut-viewer
+Requires: lzop
 Recommends: unrar p7zip-plugins
 
 %description
@@ -36,11 +44,13 @@ Recommends: unrar p7zip-plugins
 %autosetup
 
 %build
-# help find (and prefer) qt5 utilities, e.g. qmake, lrelease
 export PATH=%{_qt5_bindir}:$PATH
-mkdir build && pushd build
-%qmake_qt5 ../ VERSION=%{version} DEFINES+="VERSION=%{version}"
-%make_build
+sed -i "s|^cmake_minimum_required.*|cmake_minimum_required(VERSION 3.0)|" $(find . -name "CMakeLists.txt")
+sed -i "s|lib/|%_lib/|" CMakeLists.txt
+sed -i "s|/usr/lib|%_libdir|" src/source/common/pluginmanager.cpp
+mkdir build && pushd build 
+%cmake -DCMAKE_BUILD_TYPE=Release ../  -DAPP_VERSION=%{version} -DVERSION=%{version} 
+%make_build  
 popd
 
 %install
@@ -50,14 +60,22 @@ popd
 %doc README.md
 %license LICENSE
 %{_bindir}/%{name}
-/usr/lib/%{name}/plugins/*.so
-%{_datadir}/deepin/dde-file-manager/oem-menuextensions/*.desktop
+%_libdir/%{name}/plugins/*.so
+# %{_datadir}/deepin/dde-file-manager/oem-menuextensions/*.desktop
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_datadir}/%{name}/translations/*.qm
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/mime/packages/%{name}.xml
+%{_datadir}/deepin-manual/manual-assets/application/deepin-compressor/archive-manager/*
+%{_datadir}/applications/context-menus/*.conf
 
 %changelog
+* Fri Aug 05 2022 liweigang <liweiganga@uniontech.com> - 5.10.5-2
+- fix nothing install requires
+
+* Mon Jul 18 2022 konglidong <konglidong@uniontech.com> - 5.10.5-1
+- update to 5.10.5
+
 * Fri Feb 11 2022 liweigang <liweiganga@uniontech.com> - 5.8.0.14-2
 - fix nothing install requires
 
