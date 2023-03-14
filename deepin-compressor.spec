@@ -1,7 +1,4 @@
-%define specrelease 1%{?dist}
-%if 0%{?openeuler}
-%define specrelease 2
-%endif
+%define specrelease 3
 
 Name:           deepin-compressor
 Version:        5.10.5
@@ -10,6 +7,7 @@ Summary:        A fast and lightweight application for creating and extracting a
 License:        GPLv3+
 URL:            https://github.com/linuxdeepin/deepin-devicemanager
 Source0:        %{name}-%{version}.tar.gz
+Patch0:         0001-feat-enable-debuginfo.patch
 
 BuildRequires: gcc-c++
 BuildRequires: cmake
@@ -30,6 +28,7 @@ BuildRequires: libarchive-devel
 BuildRequires: minizip-devel
 BuildRequires: poppler-cpp-devel
 BuildRequires: gtest-devel gmock
+BuildRequires: chrpath
 
 Requires: p7zip
 Requires: lz4-libs
@@ -41,7 +40,7 @@ Recommends: unrar p7zip-plugins
 %{summary}.
 
 %prep
-%autosetup
+%autosetup -p1
 
 %build
 export PATH=%{_qt5_bindir}:$PATH
@@ -56,6 +55,21 @@ popd
 %install
 %make_install -C build INSTALL_ROOT="%buildroot"
 
+# remove rpath info
+for file in $(find %{buildroot}/ -executable -type f -exec file {} ';' | grep "\<ELF\>" | awk -F ':' '{print $1}')
+do
+    if [ ! -u "$file" ]; then
+        if [ -w $file ]; then
+            chrpath -d $file
+        fi
+    fi
+done
+
+# add rpath path in ld.so.conf.d
+mkdir -p %{buildroot}/%{_sysconfdir}/ld.so.conf.d
+echo "%{_bindir}/%{name}" > %{buildroot}/%{_sysconfdir}/ld.so.conf.d/%{name}-%{_arch}.conf
+echo "%{_libdir}/%{name}/plugins/" > %{buildroot}/%{_sysconfdir}/ld.so.conf.d/%{name}-%{_arch}.conf
+
 %files
 %doc README.md
 %license LICENSE
@@ -68,8 +82,18 @@ popd
 %{_datadir}/mime/packages/%{name}.xml
 %{_datadir}/deepin-manual/manual-assets/application/deepin-compressor/archive-manager/*
 %{_datadir}/applications/context-menus/*.conf
+%{_sysconfdir}/ld.so.conf.d/%{name}-%{_arch}.conf
+
+%post
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
 
 %changelog
+* Tue Mar 14 2023 liweigang <liweiganga@uniontech.com> - 5.10.5-3
+- feat: remove rpath
+
 * Fri Aug 05 2022 liweigang <liweiganga@uniontech.com> - 5.10.5-2
 - fix nothing install requires
 
