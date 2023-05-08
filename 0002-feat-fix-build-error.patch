@@ -1,0 +1,25 @@
+From 6cd604ef766ac9764ba4b4ccd966514b55cf83cc Mon Sep 17 00:00:00 2001
+From: leeffo <leeffo@yeah.net>
+Date: Thu, 30 Mar 2023 15:41:16 +0800
+Subject: [PATCH 2/2] feat: fix build error
+
+---
+ tests/UnitTest/include/gtest/src/stub.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tests/UnitTest/include/gtest/src/stub.h b/tests/UnitTest/include/gtest/src/stub.h
+index 76d6606..79bf963 100644
+--- a/tests/UnitTest/include/gtest/src/stub.h
++++ b/tests/UnitTest/include/gtest/src/stub.h
+@@ -16,6 +16,8 @@
+ #include <cstring>
+ //c++
+ #include <map>
++#include <iostream>
++using namespace std;
+ 
+ 
+ #define ADDR(CLASS_NAME,MEMBER_NAME) (&CLASS_NAME::MEMBER_NAME)
+-- 
+2.20.1
+
