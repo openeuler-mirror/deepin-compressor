@@ -1,14 +1,12 @@
 %define specrelease 1
 
 Name:           deepin-compressor
-Version:        5.10.11
+Version:        5.12.13
 Release:        %{specrelease}
 Summary:        A fast and lightweight application for creating and extracting archives
 License:        GPLv3+
 URL:            https://github.com/linuxdeepin/deepin-devicemanager
 Source0:        %{name}-%{version}.tar.gz
-Patch0:         0001-feat-enable-debuginfo.patch
-Patch1:         0002-feat-fix-build-error.patch
 
 BuildRequires: gcc-c++
 BuildRequires: cmake
@@ -92,6 +90,9 @@ echo "%{_libdir}/%{name}/plugins/" > %{buildroot}/%{_sysconfdir}/ld.so.conf.d/%{
 /sbin/ldconfig
 
 %changelog
+* Fri Jul 28 2023 leeffo <liweiganga@uniontech.com> - 5.12.13-1
+- upgrade to version 5.12.13
+
 * Thu Mar 30 2023 liweiganga <liweiganga@uniontech.com> - 5.10.11-1
 - update: update to 5.10.11
 
